@@ -1,0 +1,967 @@
+<!DOCTYPE hvtml>
+<!-- saved from url=(0033)https://leiyi420.github.io/glow-wavegan2/ -->
+<html lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+<title>MAID: A Conditional Diffusion Model for Long Music Audio inpainting</title>
+<meta name="generator" content="Jekyll v3.9.0">
+<meta property="og:title" content="TODO: title">
+<meta property="og:locale" content="en_US">
+<link rel="canonical" href="https://wblgers.github.io/IQDUBBING-VC.github.io/">
+<meta property="og:url" content="https://wblgers.github.io/IQDUBBING-VC.github.io/">
+<meta name="twitter:card" content="summary">
+<!-- End Jekyll SEO tag -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body data-new-gr-c-s-check-loaded="14.1001.0" data-gr-ext-installed="">
+    <section class="page-header">
+    <!-- <h1 class="project-name">Demo PAGE</h1> -->
+    <!-- <h2 class="project-tagline"></h2> -->
+      
+      
+    </section>
+
+<section class="main-content">
+    <h1 id=""><center>MAID: A Conditional Diffusion Model for Long Music Audio inpainting</center></h1>
+
+    <center> Kaiyang Liu<sup>1</sup>, Wendong Gan<sup>1</sup>, Chenchen Yuan<sup>1</sup></center>
+	<center> <sup>1</sup> Sichuan University, College of Computer Science, Chengdu, China</center>
+    <center> <sup>2</sup> Wiz Holdings Pte Ltd, Singapore</center>
+
+<h2>Contents</h2>
+<ul>
+  <li><a href="#1">Abstract</a></li>
+  <li><a href="#2">Comparison with baseline</a></li>
+  <li><a href="#3">Inpainted samples of different lengths</a></li>
+    <ul>
+        <li><a href="#3.1">Piano solo</a></li>
+		<li><a href="#3.2">Wind quintet</a></li>
+		<li><a href="#3.3">String quartet</a></li>
+		<li><a href="#3.4">Violin solo</a></li>
+    </ul>
+
+<!--   <li><a href="#5">Demo for Dubbing</a></li> -->
+</ul>
+
+<h2 id="abstract">1. Abstract<a name="1"></a></h2>
+<p>Recent works on long music audio inpainting has focused on unconditionally generating new segments to fill corrupted audio segments. However, the information about these segments may differ significantly from the original. To solve this problem, we propose MAID (Music Audio Inpainting DDPM), a model for music audio inpainting based on DDPM (Denoising Diffusion Probability Model). The model is capable of unconditional and conditional inpainting of music audio: (a) in the unconditional inpainting task, MAID is capable of inpainting gaps with a length from 200 ms to 1600 ms; (b) In the conditional inpainting task, the model can generate a new segments with similar information to the original segments based on the piano-rolls corresponding to the gaps. Experiments show that MAID performs better than baseline.</p>
+
+<h2 id="system">2. Comparison with baseline<a name="2"></a></h2>
+
+	<table class="tg">
+		<thead>
+		<tr>
+			<th class="tg-1wig"></th>
+			<th class="tg-amwm" colspan="3">Piano solo</th>
+			<th class="tg-amwm" colspan="3">Wind quintet</th>
+			<th class="tg-amwm" colspan="3">String quartet</th>
+			<th class="tg-amwm" colspan="3">Violin solo</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td class="tg-7btt", style="text-align: center;">Index</td>
+			<td class="tg-1wig", style="text-align: center;">Ground Truth</td>
+			<td class="tg-1wig", style="text-align: center;">GACELA</td>
+			<td class="tg-1wig", style="text-align: center;">MAID</td>
+
+			<td class="tg-1wig", style="text-align: center;">Ground Truth</td>
+			<td class="tg-1wig", style="text-align: center;">GACELA</td>
+			<td class="tg-1wig", style="text-align: center;">MAID</td>
+
+			<td class="tg-1wig", style="text-align: center;">Ground Truth</td>
+			<td class="tg-1wig", style="text-align: center;">GACELA</td>
+			<td class="tg-1wig", style="text-align: center;">MAID</td>
+
+			<td class="tg-1wig", style="text-align: center;">Ground Truth</td>
+			<td class="tg-1wig", style="text-align: center;">GACELA</td>
+			<td class="tg-1wig", style="text-align: center;">MAID</td>
+
+		</tr>
+		<tr>
+			<td class="tg-amwm">1</td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+		</tr>
+		<tr>
+			<td class="tg-amwm">2</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps2.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">3</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps3.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+		</tr>
+		<tr>
+			<td class="tg-amwm">4</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps4.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+
+		</tr>
+		<tr>
+			<td class="tg-amwm">5</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+		</tr>
+		<tr>
+			<td class="tg-amwm">6</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">7</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+
+		</tr>
+		<tr>
+			<td class="tg-amwm">8</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+		</tr>
+		</tbody>
+	</table>
+<h2>3. Inpainted samples of different lengths<a name="3"></a></h2>
+<a name="3.1"><h3>3.1 Piano solo</h3></a>
+ <br>
+
+	<center><p><b>Table.1. </b>Piano solo</p></center>
+	<table class="tg">
+		<thead>
+		<tr>
+			<th class="tg-1wig">Piano solo</th>
+			<th class="tg-1wig"></th>
+			<th class="tg-amwm" colspan="3">1600ms</th>
+			<th class="tg-amwm" colspan="3">1400ms</th>
+			<th class="tg-amwm" colspan="3">1200ms</th>
+			<th class="tg-amwm" colspan="3">1000ms</th>
+			<th class="tg-amwm" colspan="3">800ms</th>
+			<th class="tg-amwm" colspan="3">600ms</th>
+			<th class="tg-amwm" colspan="3">400ms</th>
+			<th class="tg-amwm" colspan="3">200ms</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td class="tg-7btt", style="text-align: center;">Index</td>
+			<td class="tg-amwm", style="text-align: center;">Original</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">1</td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps1p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">2</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/all2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps2p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">3</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/all3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps3p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">4</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/all4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps4p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">5</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/all5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS128/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS112/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS96/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS80/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS64/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS48/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS32/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/PS16/nps5p.wav"></audio></td>
+		</tr>
+		</tbody>
+	</table>
+	<br>
+	<a name="3.2"><h3>3.2 Wind quintet</h3></a>
+	<br>
+	<center><p><b>Table.2. </b>Wind quintet</p></center>
+	<table class="tg">
+		<thead>
+		<tr>
+			<th class="tg-1wig">Wind quintet</th>
+			<th class="tg-1wig"></th>
+			<th class="tg-amwm" colspan="3">1600ms</th>
+			<th class="tg-amwm" colspan="3">1400ms</th>
+			<th class="tg-amwm" colspan="3">1200ms</th>
+			<th class="tg-amwm" colspan="3">1000ms</th>
+			<th class="tg-amwm" colspan="3">800ms</th>
+			<th class="tg-amwm" colspan="3">600ms</th>
+			<th class="tg-amwm" colspan="3">400ms</th>
+			<th class="tg-amwm" colspan="3">200ms</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td class="tg-7btt", style="text-align: center;">Index</td>
+			<td class="tg-amwm", style="text-align: center;">Original</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">1</td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps1p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">2</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/all2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps2p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">3</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/all3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps3p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">4</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/all4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps4p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">5</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/all5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ128/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ112/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ96/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ80/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ64/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ48/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ32/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/WQ16/nps5p.wav"></audio></td>
+		</tr>
+		</tbody>
+	</table>
+	<br>
+	<a name="3.3"><h3>3.3 String quartet</h3></a>
+	<br>
+	<center><p><b>Table.3. </b>String quartet</p></center>
+	<table class="tg">
+		<thead>
+		<tr>
+			<th class="tg-1wig">String quartet</th>
+			<th class="tg-1wig"></th>
+			<th class="tg-amwm" colspan="3">1600ms</th>
+			<th class="tg-amwm" colspan="3">1400ms</th>
+			<th class="tg-amwm" colspan="3">1200ms</th>
+			<th class="tg-amwm" colspan="3">1000ms</th>
+			<th class="tg-amwm" colspan="3">800ms</th>
+			<th class="tg-amwm" colspan="3">600ms</th>
+			<th class="tg-amwm" colspan="3">400ms</th>
+			<th class="tg-amwm" colspan="3">200ms</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td class="tg-7btt", style="text-align: center;">Index</td>
+			<td class="tg-amwm", style="text-align: center;">Original</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">1</td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps1p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">2</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/all2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps2p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">3</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/all3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps3p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">4</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/all4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps4p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">5</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/all5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ128/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ112/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ96/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ80/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ64/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ48/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ32/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/SQ16/nps5p.wav"></audio></td>
+		</tr>
+		</tbody>
+	</table>
+	<a name="3.4"><h3>3.4 Violin solo</h3></a>
+	<br>
+	<center><p><b>Table.4. </b>Violin solo</p></center>
+	<table class="tg">
+		<thead>
+		<tr>
+			<th class="tg-1wig">Violin solo</th>
+			<th class="tg-1wig"></th>
+			<th class="tg-amwm" colspan="3">1600ms</th>
+			<th class="tg-amwm" colspan="3">1400ms</th>
+			<th class="tg-amwm" colspan="3">1200ms</th>
+			<th class="tg-amwm" colspan="3">1000ms</th>
+			<th class="tg-amwm" colspan="3">800ms</th>
+			<th class="tg-amwm" colspan="3">600ms</th>
+			<th class="tg-amwm" colspan="3">400ms</th>
+			<th class="tg-amwm" colspan="3">200ms</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td class="tg-7btt", style="text-align: center;">Index</td>
+			<td class="tg-amwm", style="text-align: center;">Original</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+			<td class="tg-1wig", style="text-align: center;">gap</td>
+			<td class="tg-1wig", style="text-align: center;">uncond</td>
+			<td class="tg-1wig", style="text-align: center;">cond</td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">1</td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps1p.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/havegap1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps1p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">2</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps2p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/havegap2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps2.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps2p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">3</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps3p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/havegap3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps3.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps3p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">4</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps4p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/havegap4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps4.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps4p.wav"></audio></td>
+		</tr>
+		<tr>
+			<td class="tg-amwm">5</td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS112/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS96/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS80/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS64/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS48/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS32/nps5p.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/havegap5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps5.wav"></audio></td>
+			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS16/nps5p.wav"></audio></td>
+		</tr>
+		</tbody>
+	</table>
+
+
+
