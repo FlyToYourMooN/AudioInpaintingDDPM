@@ -26,7 +26,7 @@
 <section class="main-content">
     <h1 id=""><center>MAID: A Conditional Diffusion Model for Long Music Audio inpainting</center></h1>
 
-    <center> Kaiyang Liu<sup>1</sup>, Wendong Gan<sup>1</sup>, Chenchen Yuan<sup>1</sup></center>
+    <center> Kaiyang Liu<sup>1</sup>, Wendong Gan<sup>2</sup>, Chenchen Yuan<sup>1</sup></center>
 	<center> <sup>1</sup> Sichuan University, College of Computer Science, Chengdu, China</center>
     <center> <sup>2</sup> Wiz Holdings Pte Ltd, Singapore</center>
 
@@ -54,10 +54,10 @@
 		<thead>
 		<tr>
 			<th class="tg-1wig"></th>
-			<th class="tg-amwm" colspan="3">Piano solo</th>
-			<th class="tg-amwm" colspan="3">Wind quintet</th>
-			<th class="tg-amwm" colspan="3">String quartet</th>
-			<th class="tg-amwm" colspan="3">Violin solo</th>
+			<th class="tg-amwm" colspan="4">Piano solo</th>
+			<th class="tg-amwm" colspan="4">Wind quintet</th>
+			<th class="tg-amwm" colspan="4">String quartet</th>
+			<th class="tg-amwm" colspan="4">Violin solo</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -65,140 +65,143 @@
 			<td class="tg-7btt", style="text-align: center;">Index</td>
 			<td class="tg-1wig", style="text-align: center;">Ground Truth</td>
 			<td class="tg-1wig", style="text-align: center;">GACELA</td>
-			<td class="tg-1wig", style="text-align: center;">MAID</td>
+			<td class="tg-1wig", style="text-align: center;">MAID-uncond</td>
+			<td class="tg-1wig", style="text-align: center;">MAID-cond</td>
 
 			<td class="tg-1wig", style="text-align: center;">Ground Truth</td>
 			<td class="tg-1wig", style="text-align: center;">GACELA</td>
 			<td class="tg-1wig", style="text-align: center;">MAID</td>
+			<td class="tg-1wig", style="text-align: center;">MAID-cond</td>
 
 			<td class="tg-1wig", style="text-align: center;">Ground Truth</td>
 			<td class="tg-1wig", style="text-align: center;">GACELA</td>
 			<td class="tg-1wig", style="text-align: center;">MAID</td>
+			<td class="tg-1wig", style="text-align: center;">MAID-cond</td>
 
 			<td class="tg-1wig", style="text-align: center;">Ground Truth</td>
 			<td class="tg-1wig", style="text-align: center;">GACELA</td>
 			<td class="tg-1wig", style="text-align: center;">MAID</td>
+			<td class="tg-1wig", style="text-align: center;">MAID-cond</td>
 
 		</tr>
 		<tr>
 			<td class="tg-amwm">1</td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/gacela_0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_uncond_0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_cond_0.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/gacela_0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_uncond_0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_cond_0.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/gacela_0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_uncond_0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_cond_0.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/gacela_0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_uncond_0.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_cond_0.wav"></audio></td>
+
 
 		</tr>
 		<tr>
 			<td class="tg-amwm">2</td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all2.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap2.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/gacela_1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_uncond_1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_cond_1.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/gacela_1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_uncond_1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_cond_1.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/gacela_1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_uncond_1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_cond_1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/gacela_1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_uncond_1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_cond_1.wav"></audio></td>
 		</tr>
 		<tr>
 			<td class="tg-amwm">3</td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all3.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap3.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/gacela_2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_uncond_2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_cond_2.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/gacela_2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_uncond_2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_cond_2.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/gacela_2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_uncond_2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_cond_2.wav"></audio></td>
+
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/gacela_2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_uncond_2.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_cond_2.wav"></audio></td>
 
 		</tr>
 		<tr>
 			<td class="tg-amwm">4</td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all4.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap4.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/gacela_3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_uncond_3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_cond_3.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
-
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/gacela_3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_uncond_3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_cond_3.wav"></audio></td>
 
 
-		</tr>
-		<tr>
-			<td class="tg-amwm">5</td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/gacela_3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_uncond_3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_cond_3.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
-
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/gacela_3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_uncond_3.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_cond_3.wav"></audio></td>
 
 		</tr>
 		<tr>
-			<td class="tg-amwm">6</td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
+			<td class="tg-amwm">4</td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/gacela_4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_uncond_4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/piano_solo/ddpm_cond_4.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
-
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
-		</tr>
-		<tr>
-			<td class="tg-amwm">7</td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
-
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
-
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/gacela_4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_uncond_4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/wind_quintet/ddpm_cond_4.wav"></audio></td>
 
 
-		</tr>
-		<tr>
-			<td class="tg-amwm">8</td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all5.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap5.wav"></audio></td>
-			<td class="tg-0lax"><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps5.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/gacela_4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_uncond_4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/string_quartet/ddpm_cond_4.wav"></audio></td>
 
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
-
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/all1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/havegap1.wav"></audio></td>
-			<td><audio style="width: 160px;" controls="" preload="none" src="samples/VS128/nps1.wav"></audio></td>
-
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/gacela_4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_uncond_4.wav"></audio></td>
+			<td><audio style="width: 160px;" controls="" preload="none" src="samples/compare_sample/violin_solo/ddpm_cond_4.wav"></audio></td>
 		</tr>
 		</tbody>
 	</table>
